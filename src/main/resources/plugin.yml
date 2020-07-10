@@ -1,0 +1,10 @@
+name: LvckyCores
+version: 1.0
+author: Lukas
+main: de.markensau.main.Main
+commands:
+  cores:
+    description: Main Commando
+    usage:
+  start:
+    description:
