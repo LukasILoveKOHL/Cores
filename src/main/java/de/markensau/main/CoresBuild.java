@@ -3,6 +3,7 @@ package de.markensau.main;
 import de.markensau.listeners.JoinListener;
 import de.markensau.listeners.TeamChoose;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,20 +32,48 @@ public class CoresBuild implements Listener {
 
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent e){
+    public void onQuit(PlayerQuitEvent e) {
         e.setQuitMessage("");
     }
 
 
     @EventHandler()
     public void onDrop(PlayerDropItemEvent e) {
-        e.setCancelled(true);
+        if (!JoinListener.gamestart){
+            e.setCancelled(false);
+        }else {
+            e.setCancelled(true);
+        }
     }
 
 
     @EventHandler()
     public void onBuild(BlockPlaceEvent e) {
-        e.setCancelled(JoinListener.damageblockcancelled);
+        Player p = e.getPlayer();
+        if (!JoinListener.gamestart){
+            e.setCancelled(false);
+        }else {
+            e.setCancelled(true);
+        }
+        if (p.hasPermission("cores.build")) {
+            e.setCancelled(false);
+        }
+        org.bukkit.block.Block b = (Block) e.getBlock();
+        if (b.getType() == Material.WORKBENCH) {
+            e.setCancelled(false);
+        }else if (b.getType() == Material.WOOD) {
+            e.setCancelled(false);
+        } else if (b.getType() == Material.IRON_BLOCK) {
+            e.setCancelled(false);
+        } else if (b.getType() == Material.DIAMOND_BLOCK) {
+            e.setCancelled(false);
+        } else if (b.getType() == Material.CHEST) {
+            e.setCancelled(false);
+        } else if (b.getType() == Material.ENCHANTMENT_TABLE) {
+            e.setCancelled(false);
+        } else {
+            e.setCancelled(true);
+        }
 
     }
 
@@ -52,46 +81,58 @@ public class CoresBuild implements Listener {
     public void onDeathMessage(PlayerDeathEvent e) {
         Player p = (Player) e.getEntity();
         e.setDeathMessage("");
-        e.setDeathMessage(Main.p + "Der Spieler §6" + e.getEntity().getKiller().getDisplayName() + " §ahat den Spieler §6" + p.getDisplayName() + "§a getötet!");
+
     }
 
     @EventHandler()
     public void onBuild2(BlockBreakEvent e) {
         e.setCancelled(JoinListener.damageblockcancelled);
-
+        Player p = e.getPlayer();
+        if (p.hasPermission("cores.build")) {
+            e.setCancelled(false);
+        }
     }
+
+
 
     @EventHandler()
     public void onMobSpawning(EntitySpawnEvent e) {
-        e.setCancelled(true);
+
 
     }
-    public String getTeam(Player player){
-        if (TeamChoose.loreRed.contains(player)){
+
+    public String getTeam(Player player) {
+        if (TeamChoose.loreRed.contains(player)) {
             return "red";
         }
-        if (TeamChoose.loreBlue.contains(player)){
+        if (TeamChoose.loreBlue.contains(player)) {
             return "blue";
         } else {
             return null;
         }
 
     }
+
     @EventHandler()
     public void EntityDamageEvent(EntityDamageByEntityEvent e) {
-        Player p = (Player) e.getEntity();
-        if (JoinListener.damageblockcancelled == true) {
-            e.setCancelled(true);
-        } else if (getTeam(p).equalsIgnoreCase("red")){
-            for (Player all : Bukkit.getOnlinePlayers()) {
-                System.out.println(getTeam(all));
-                e.setCancelled(true);
+        for (Player red : TeamChoose.teamred){
+
+            for (Player blue : TeamChoose.teamblue){
+                if (red == blue){
+                    e.setCancelled(true);
+
+                }else if (blue == red){
+                    e.setCancelled(true);
+
+                }else {
+                    e.setCancelled(false);
+                }
+
             }
-        }else if (getTeam(p).equalsIgnoreCase("blue")){
-            e.setCancelled(true);
-        }else {
+
 
         }
+
 
     }
 

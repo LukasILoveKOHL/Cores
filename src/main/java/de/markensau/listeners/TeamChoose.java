@@ -31,6 +31,9 @@ public class TeamChoose implements Listener {
 
     public static HashMap<String, String> teams = new HashMap<>();
 
+    public static ArrayList<Player> teamblue = new ArrayList<>();
+    public static ArrayList<Player> teamred = new ArrayList<>();
+
     public static ArrayList<String> loreRed = new ArrayList<>();
     public static ArrayList<String> loreBlue = new ArrayList<>();
 
@@ -109,49 +112,57 @@ public class TeamChoose implements Listener {
     @EventHandler()
     public void onclick(InventoryClickEvent e) {
         Player p = (Player) e.getWhoClicked();
-        if (e.getClickedInventory().getTitle().equalsIgnoreCase("§4Wähle dein Team")){
+        try {
+            if (e.getClickedInventory().getTitle().equalsIgnoreCase("§4Wähle dein Team")){
 
-            if (e.getSlot() == 0){
-                if (!teams.get(p.getName()).equals("red")){
+                if (e.getSlot() == 0){
+                    if (!teams.get(p.getName()).equals("red")){
 
-                    if (teams.get(p.getName()).equals("blue")){
-                        loreBlue.remove("§7: §9" + p.getName());
-                        teams.remove(p.getName() ,"blue");
+                        if (teams.get(p.getName()).equals("blue")){
+                            loreBlue.remove("§7: §9" + p.getName());
+                            teams.remove(p.getName() ,"blue");
+                        }
+
+                        teams.put(p.getName(), "red");
+
+                        loreRed.add("§7: §4" + p.getName());
+
+                        p.closeInventory();
+                        p.sendMessage(Main.p + "Du bist nun im Team§4 Rot§a.");
+
+                    }else {
+                        p.sendMessage(Main.p + "§4Du bist bereits in diesen Team!");
+                        p.closeInventory();
                     }
+                }else if (e.getSlot() == 8){
+                    if (!teams.get(p.getName()).equals("blue")){
+                        if (teams.get(p.getName()).equals("red")){
+                            loreRed.remove("§7: §4" + p.getName());
+                            teams.remove(p.getName() ,"red");
+                        }
+                        teams.put(p.getName(), "blue");
 
-                    teams.put(p.getName(), "red");
-
-                    loreRed.add("§7: §4" + p.getName());
-
-                    p.closeInventory();
-                    p.sendMessage(Main.p + "Du bist nun im Team§4 Rot§a.");
-
-                }else {
-                    p.sendMessage(Main.p + "§4Du bist bereits in diesen Team!");
-                    p.closeInventory();
-                }
-            }else if (e.getSlot() == 8){
-                if (!teams.get(p.getName()).equals("blue")){
-                    if (teams.get(p.getName()).equals("red")){
-                        loreRed.remove("§7: §4" + p.getName());
-                        teams.remove(p.getName() ,"red");
+                        loreBlue.add("§7: §9" + p.getName());
+                        p.closeInventory();
+                        p.sendMessage(Main.p + "Du bist nun im Team§9 Blau§a.");
+                    }else {
+                        p.sendMessage(Main.p + "§9Du bist bereits in diesen Team!");
+                        p.closeInventory();
                     }
-                    teams.put(p.getName(), "blue");
-
-                    loreBlue.add("§7: §9" + p.getName());
-                    p.closeInventory();
-                    p.sendMessage(Main.p + "Du bist nun im Team§9 Blau§a.");
                 }else {
-                    p.sendMessage(Main.p + "§9Du bist bereits in diesen Team!");
                     p.closeInventory();
+                    e.setCancelled(true);
                 }
+
             }else {
                 p.closeInventory();
                 e.setCancelled(true);
             }
+        }catch (Exception e1){
 
         }
-        e.setCancelled(true);
+
+
 
     }
 
